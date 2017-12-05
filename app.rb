@@ -1,5 +1,4 @@
 require './player'
-require './questions'
 
 class QuizGame
 
