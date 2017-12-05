@@ -1,4 +1,5 @@
 require './player'
+require './questions'
 
 class QuizGame
 
@@ -19,18 +20,42 @@ class QuizGame
     @players[@current_player]
   end
 
-  def start
-    greet_players
-    until game_over? do
-      puts "Are you ready #{current_player.name}?"
-      gets
-      # TODO ask a question and only award point if correct
-      print_scores
+  def ask_question_1
+    puts "#{current_player.name}: What is 1 + 1?"
+    if gets.chomp == "2"
+      puts "Correct! Way to go!"
+    else
+      puts "WRONG! YOU'RE HORRIBLY WRONG!"
+      lose_life
     end
   end
 
+  def ask_question_2
+    puts "#{current_player.name}: What is 4 x 4?"
+    if gets.chomp == "16"
+      puts "WOAH! We got ourselves a genius here!"
+    else
+      puts "YOU'RE A HORRIBLE HUMAN BEING, WHAT'S WRONG WITH YOU!?"
+      lose_life
+    end
+  end
+
+  def start
+    greet_players
+    until game_over? do
+      ask_question_1
+      print_scores
+      swap_players
+      ask_question_2
+      print_scores
+      swap_players
+    end
+    puts "-----GAME OVER!!!-----"
+    print_scores
+  end
+
   def game_over?
-    @players.any? { |player| player.lives >= 0 }
+    @players.any? { |player| player.lives == 0 }
   end
 
   def lose_life
@@ -55,7 +80,7 @@ class QuizGame
 
   def print_scores
     @players.each do |player|
-      puts "#{player.name} has #{player.points} points"
+      puts "#{player.name} has #{player.lives} lives reamining"
     end
   end
 
